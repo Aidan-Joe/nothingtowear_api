@@ -1,0 +1,443 @@
+{
+  "info": {
+    "_postman_id": "b8f9c2a1-7e5d-4c3b-9a12-nothingtowear2026",
+    "name": "Nothing To Wear API (CPM399)",
+    "description": "Koleksi Endpoint RESTful API Nothing To Wear berdasarkan 4 Proses DFD Level 1 & Skema db_nothingtowear.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "1.0 Kelola Akun & Notifikasi",
+      "item": [
+        {
+          "name": "Register Akun Baru",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Aidan\",\n  \"email\": \"aidan_test@email.com\",\n  \"password\": \"password123\",\n  \"lokasi_default\": \"Jakarta, Indonesia\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login (Auto-Save Bearer Token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.token) {",
+                  "    pm.collectionVariables.set(\"token\", res.token);",
+                  "    console.log(\"Token berhasil disimpan: \" + res.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"aidan@email.com\",\n  \"password\": \"password123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Profile & Statistik Wardrobe",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/profile",
+              "host": ["{{base_url}}"],
+              "path": ["profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_password\": \"password123\",\n  \"new_password\": \"passwordbaru123\",\n  \"new_password_confirmation\": \"passwordbaru123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/profile/password",
+              "host": ["{{base_url}}"],
+              "path": ["profile", "password"]
+            }
+          }
+        },
+        {
+          "name": "Get Daftar Notifikasi",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications",
+              "host": ["{{base_url}}"],
+              "path": ["notifications"]
+            }
+          }
+        },
+        {
+          "name": "Tandai Notifikasi Sudah Dibaca",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications/1/read",
+              "host": ["{{base_url}}"],
+              "path": ["notifications", "1", "read"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2.0 Kelola Wardrobe & AI Auto-Tagging",
+      "item": [
+        {
+          "name": "Get Semua Kategori Pakaian",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/categories",
+              "host": ["{{base_url}}"],
+              "path": ["categories"]
+            }
+          }
+        },
+        {
+          "name": "Get Koleksi Pakaian (Filter & Search)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/wardrobe/items?category_id=3&search=Cashmere",
+              "host": ["{{base_url}}"],
+              "path": ["wardrobe", "items"],
+              "query": [
+                { "key": "category_id", "value": "3" },
+                { "key": "search", "value": "Cashmere" },
+                { "key": "style_occasion", "value": "Smart Casual", "disabled": true },
+                { "key": "is_favorite", "value": "1", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Step 1: Upload Foto & AI Vision Auto-Tagging",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/wardrobe/auto-tag",
+              "host": ["{{base_url}}"],
+              "path": ["wardrobe", "auto-tag"]
+            }
+          }
+        },
+        {
+          "name": "Step 2: Simpan Atribut Pakaian ke Wardrobe",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category_id\": 1,\n  \"nama_item\": \"Oversized Oxford Shirt\",\n  \"warna\": \"Light Blue\",\n  \"brand\": \"Uniqlo\",\n  \"ukuran\": \"L\",\n  \"style_occasion\": \"Smart Casual\",\n  \"tag\": \"shirt,oxford,cotton,work\",\n  \"url_gambar\": \"https://storage.nothingtowear.app/items/oxford_shirt.png\",\n  \"is_favorite\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/wardrobe/items",
+              "host": ["{{base_url}}"],
+              "path": ["wardrobe", "items"]
+            }
+          }
+        },
+        {
+          "name": "Hapus Pakaian dari Wardrobe",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/wardrobe/items/7",
+              "host": ["{{base_url}}"],
+              "path": ["wardrobe", "items", "7"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3.0 Susun Outfit, AI Curator & Packing",
+      "item": [
+        {
+          "name": "Get Koleksi Outfit & Koordinat Kanvas",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/outfits",
+              "host": ["{{base_url}}"],
+              "path": ["outfits"]
+            }
+          }
+        },
+        {
+          "name": "AI Curator - Method 2 (1 Key Item + AI Complete)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metode_pembuatan\": \"Key Item AI\",\n  \"key_item_id\": 1,\n  \"event\": \"Dinner & Coffee Hangout\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/stylist/curate",
+              "host": ["{{base_url}}"],
+              "path": ["stylist", "curate"]
+            }
+          }
+        },
+        {
+          "name": "AI Curator - Method 3 (Full AI Builder + Weather)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metode_pembuatan\": \"Full AI Builder\",\n  \"event\": \"Tech Pitching Day\",\n  \"lokasi\": \"Depok, Indonesia\",\n  \"tanggal\": \"2026-11-05\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/stylist/curate",
+              "host": ["{{base_url}}"],
+              "path": ["stylist", "curate"]
+            }
+          }
+        },
+        {
+          "name": "Simpan Outfit Kanvas (X/Y, Z-Index, Scale)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Monochrome Campus Look\",\n  \"mood_event\": \"Campus Lecture & Lab\",\n  \"metode_pembuatan\": \"Manual\",\n  \"preview_url\": \"https://storage.nothingtowear.app/outfits/monochrome_campus.png\",\n  \"is_favorite\": true,\n  \"items\": [\n    {\n      \"item_id\": 2,\n      \"pos_x\": 60.5,\n      \"pos_y\": 45.0,\n      \"z_index\": 2,\n      \"scale\": 1.0,\n      \"is_key_item\": true\n    },\n    {\n      \"item_id\": 3,\n      \"pos_x\": 120.0,\n      \"pos_y\": 165.0,\n      \"z_index\": 1,\n      \"scale\": 1.05,\n      \"is_key_item\": false\n    },\n    {\n      \"item_id\": 4,\n      \"pos_x\": 190.0,\n      \"pos_y\": 220.0,\n      \"z_index\": 3,\n      \"scale\": 0.95,\n      \"is_key_item\": false\n    }\n  ]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/outfits",
+              "host": ["{{base_url}}"],
+              "path": ["outfits"]
+            }
+          }
+        },
+        {
+          "name": "Get Daily Recommendation (Home Page)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/recommendations/daily",
+              "host": ["{{base_url}}"],
+              "path": ["recommendations", "daily"]
+            }
+          }
+        },
+        {
+          "name": "Get Daftar Packing List",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/packing-lists",
+              "host": ["{{base_url}}"],
+              "path": ["packing-lists"]
+            }
+          }
+        },
+        {
+          "name": "Buat Packing List Perjalanan Baru",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama_perjalanan\": \"Yogyakarta Short Escape\",\n  \"destinasi\": \"Yogyakarta\",\n  \"tgl_mulai\": \"2026-11-20\",\n  \"tgl_selesai\": \"2026-11-22\",\n  \"items\": [\n    { \"item_id\": 1, \"jumlah\": 1 },\n    { \"item_id\": 6, \"jumlah\": 3 },\n    { \"item_id\": 7, \"jumlah\": 2 }\n  ]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/packing-lists",
+              "host": ["{{base_url}}"],
+              "path": ["packing-lists"]
+            }
+          }
+        },
+        {
+          "name": "Checklist Barang di Packing List",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_packed\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/packing-lists/1/items/3",
+              "host": ["{{base_url}}"],
+              "path": ["packing-lists", "1", "items", "3"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4.0 Kelola Kalender OOTD & Cuaca",
+      "item": [
+        {
+          "name": "Get Jadwal Kalender OOTD",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/calendar",
+              "host": ["{{base_url}}"],
+              "path": ["calendar"]
+            }
+          }
+        },
+        {
+          "name": "Jadwalkan Outfit ke Kalender (Auto Weather Fetch)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"outfit_id\": 1,\n  \"tanggal\": \"2026-11-10\",\n  \"waktu\": \"10:00:00\",\n  \"lokasi\": \"Depok, Indonesia\",\n  \"event\": \"System Integration Testing & QA Review\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/calendar",
+              "host": ["{{base_url}}"],
+              "path": ["calendar"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
